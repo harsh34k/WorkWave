@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Latest ECMAScript version for modern features
+    "module": "CommonJS", // CommonJS module system
+    "lib": [
+      "ESNext",
+      "DOM"
+    ], // Include standard libraries
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Compatibility with CommonJS and ES Modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in module imports
+    "noImplicitAny": true, // Prevent variables from having an `any` type implicitly
+    "outDir": "./dist", // Redirect output structure to the `dist` folder
+    "rootDir": "./src", // Root directory of input files
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types" // Ensure TypeScript looks for type definitions in `src/types`
+    ],
+    "resolveJsonModule": true, // Allow importing JSON files
+    "strictPropertyInitialization": false, // Disable strict initialization for class properties
+    "baseUrl": ".", // Base directory for non-relative module names
+    "paths": { // Allow for path mapping
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*" // Include all files in the `src` folder
+  ],
+  "exclude": [
+    "node_modules", // Exclude `node_modules` folder
+    "dist" // Exclude `dist` folder
+  ]
+}

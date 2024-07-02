@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Applicant {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  password     String
+  fullName     String
+  avatarUrl    String?
+  refreshToken String?
+  applications Application[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("applicants")
+}
+
+model Employer {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  fullName     String
+  companyName  String
+  jobTitle     String
+  avatarUrl    String?
+  refreshToken String?
+  createdJobs  Job[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("employers")
+}
+
+model Job {
+  id           String        @id @default(cuid())
+  title        String
+  description  String
+  location     String
+  workMode     WorkMode // New field for work mode
+  experience   Experience // New field for experience level
+  salary       Salary // New field for salary
+  duration     String // New field for duration
+  education    String // New field for required education
+  postedAt     DateTime      @default(now())
+  employerId   String
+  employer     Employer      @relation(fields: [employerId], references: [id])
+  applications Application[] // Relationship with Application model
+}
+
+enum WorkMode {
+  ONSITE
+  REMOTE
+  HYBRID
+}
+
+enum Experience {
+  FRESHER
+  ONE_YEAR
+  TWO_YEARS
+  THREE_YEARS
+  FOUR_YEARS
+  FIVE_YEARS
+}
+
+enum Salary {
+  BELOW_3_LAKHS
+  FROM_3_TO_6_LAKHS
+  FROM_6_TO_10_LAKHS
+  FROM_10_TO_15_LAKHS
+  ABOVE_15_LAKHS
+}
+
+model Application {
+  id          String    @id @default(cuid())
+  jobId       String
+  applicantId String
+  coverLetter String
+  job         Job       @relation(fields: [jobId], references: [id])
+  applicant   Applicant @relation(fields: [applicantId], references: [id])
+
+  @@map("applications")
+}
