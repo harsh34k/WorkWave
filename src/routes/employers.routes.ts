@@ -1,5 +1,5 @@
 import { Router } from "express";
-import validate from "../middleware/registratioinValidator.middleware"
+import validate from "../middleware/authValidator.middleware"
 import { upload } from "../middleware/multer.middleware"
 import { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, getAllCreatedJobs } from "../controllers/employers.controllers";
 import { RegistrationData, registrationSchema } from "../Validators/registrationValidator";
@@ -34,7 +34,7 @@ router.route("/current-user").get(verifyJWT("employer"), getCurrentUser)
 router.route("/update-account").patch(verifyJWT("employer"), updateAccountDetails)
 
 router.route("/avatar").patch(verifyJWT("employer"), upload.single("avatar"), updateUserAvatar)
-router.get('/c/jobs', verifyJWT('employer'), getAllCreatedJobs);
+router.get('/c/created-jobs', verifyJWT('employer'), getAllCreatedJobs);
 
 
 export default router

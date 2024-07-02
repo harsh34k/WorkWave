@@ -59,6 +59,17 @@ model Job {
   applications Application[] // Relationship with Application model
 }
 
+model Application {
+  id          String    @id @default(cuid())
+  jobId       String
+  applicantId String
+  coverLetter String
+  job         Job       @relation(fields: [jobId], references: [id])
+  applicant   Applicant @relation(fields: [applicantId], references: [id])
+
+  @@map("applications")
+}
+
 enum WorkMode {
   ONSITE
   REMOTE
@@ -80,15 +91,4 @@ enum Salary {
   FROM_6_TO_10_LAKHS
   FROM_10_TO_15_LAKHS
   ABOVE_15_LAKHS
-}
-
-model Application {
-  id          String    @id @default(cuid())
-  jobId       String
-  applicantId String
-  coverLetter String
-  job         Job       @relation(fields: [jobId], references: [id])
-  applicant   Applicant @relation(fields: [applicantId], references: [id])
-
-  @@map("applications")
 }
