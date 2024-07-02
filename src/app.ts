@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import applicantRouter from "./routes/applicants.routes"
 import employerRouter from "./routes/employers.routes"
+import jobRouter from "./routes/jobs.routes"
 
 
 const app = express();
@@ -27,18 +28,9 @@ app.get("/api/v1/healthcheck", (req, res) => {
 });
 app.use('/api/v1/applicants', applicantRouter);
 app.use('/api/v1/employers', employerRouter);
-// app.use('/api/v1/employers', (req, res) => {
-//     console.log("ello");
 
-//     res.status(200).json({ message: "Health check OK" });
-// });
 
-// Import and use your routes
-// import userRouter from './routes/user.routes.js';
-// import jobRouter from './routes/job.routes.js'; // Replace with your actual routes
-// Import other routers as needed
-
-// app.use("/api/v1/users", userRouter);
+app.use("/api/v1/jobs", jobRouter);
 // app.use("/api/v1/jobs", jobRouter); // Use your job routes similarly
 // Use other routes as needed
 
