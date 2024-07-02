@@ -23,11 +23,15 @@
     "paths": { // Allow for path mapping
       "@/*": [
         "src/*"
+      ],
+      "@types/*": [
+        "types/*"
       ]
     }
   },
   "include": [
-    "src/**/*" // Include all files in the `src` folder
+    "src/**/*",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules", // Exclude `node_modules` folder

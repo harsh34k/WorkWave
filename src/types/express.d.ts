@@ -1,9 +1,9 @@
 import { Employer, Applicant } from "@prisma/client";
+import { Request } from "express";
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: Employer | Applicant | null; // Add optional `user` property
-        }
-    }
+
+
+export interface requestwithUser extends Request {
+    user?: Employer | Applicant | null;
+    // user:string
 }

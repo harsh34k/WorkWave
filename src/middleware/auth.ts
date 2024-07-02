@@ -5,6 +5,9 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 //import .env
 import dotenv from "dotenv"
 import { PrismaClient } from '@prisma/client';
+import { NextFunction, Request, Response } from "express";
+import { requestwithUser } from "@/types/express";
+
 const prisma = new PrismaClient();
 
 interface TokenInterface {
@@ -14,7 +17,7 @@ interface TokenInterface {
     fullName: string;
 }
 
-export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async (req, res, next) => {
+export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async (req: requestwithUser, res: Response, next: NextFunction) => {
     try {
         console.log("hey i am here");
 
