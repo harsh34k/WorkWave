@@ -151,8 +151,81 @@ const deleteJob = async (req: Request, res: Response) => {
 };
 
 
+// Define possible query parameters and their types
+interface JobFilters {
+    title?: string;
+    description?: string;
+    location?: string;
+    workMode?: WorkMode;
+    experience?: Experience;
+    salary?: Salary;
+    education?: string;
+}
+
+const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
+    try {
+        const {
+            title,
+            description,
+            location,
+            workMode,
+            experience,
+            salary,
+            education
+        } = req.query as JobFilters;
+
+        // Build the filter object for Prisma
+        const filters: any = {};
+
+        if (title) {
+            filters.title = {
+                contains: title,
+                mode: "insensitive"
+            };
+        }
+        if (description) {
+            filters.description = {
+                contains: description,
+                mode: "insensitive"
+            };
+        }
+        if (location) {
+            filters.location = {
+                contains: location,
+                mode: "insensitive"
+            };
+        }
+        if (workMode) {
+            filters.workMode = workMode;
+        }
+        if (experience) {
+            filters.experience = experience;
+        }
+        if (salary) {
+            filters.salary = salary;
+        }
+        if (education) {
+            filters.education = {
+                contains: education,
+                mode: "insensitive"
+            };
+        }
+
+        // Fetch filtered jobs from Prisma
+        const jobs = await prisma.job.findMany({
+            where: filters
+        });
+
+        return res.status(200).json(new ApiResponse(200, jobs, "Filtered jobs retrieved successfully"));
+    } catch (error) {
+        console.error('Error filtering jobs:', error);
+        return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
+    }
+});
 
 
 
 
-export { publishJob, getAllJobs, getJobById, updateJob, deleteJob }
+
+
+export { publishJob, getAllJobs, getJobById, updateJob, deleteJob, filterJob }
