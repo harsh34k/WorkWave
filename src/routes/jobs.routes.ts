@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { JobData, JobSchema } from "../Validators/JobValidator"
-import { getAllJobs, getJobById, publishJob, updateJob, deleteJob } from '../controllers/jobs.controllers';
+import { getAllJobs, getJobById, publishJob, updateJob, deleteJob, filterJob } from '../controllers/jobs.controllers';
 import { verifyJWT } from '../middleware/auth';
 import validate from '../middleware/authValidator.middleware';
 
@@ -39,6 +39,11 @@ router.route('/:jobId')
     .delete(
         verifyJWT("employer"),
         deleteJob
+    );
+
+router.route("/filter")
+    .get(
+        filterJob // Controller function for filtering jobs
     );
 
 export default router;
