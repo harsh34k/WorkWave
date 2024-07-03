@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import applicantRouter from "./routes/applicants.routes"
 import employerRouter from "./routes/employers.routes"
 import jobRouter from "./routes/jobs.routes"
+import applicationRouter from "./routes/applications.routes"
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/v1/employers', employerRouter);
 
 
 app.use("/api/v1/jobs", jobRouter);
+app.use("/api/v1/applications", applicationRouter);
 // app.use("/api/v1/jobs", jobRouter); // Use your job routes similarly
 // Use other routes as needed
 

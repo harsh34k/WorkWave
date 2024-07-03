@@ -1,6 +1,6 @@
-import { requestwithUser } from "@/types/express";
-import { ApiResponse } from "@/utils/ApiResponse";
-import { asyncHandler } from "@/utils/asyncHandler";
+import { requestwithUser } from "../types/express";
+import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler";
 import { Experience, PrismaClient, Salary, WorkMode } from "@prisma/client";
 import { Request, Response } from "express";
 

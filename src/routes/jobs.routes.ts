@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { JobData, JobSchema } from '@/Validators/JobValidator';
-import { getAllJobs, getJobById, publishJob, updateJob, deleteJob } from '@/controllers/jobs.controllers';
-import { verifyJWT } from '@/middleware/auth';
-import validate from '@/middleware/authValidator.middleware';
+import { JobData, JobSchema } from "../Validators/JobValidator"
+import { getAllJobs, getJobById, publishJob, updateJob, deleteJob } from '../controllers/jobs.controllers';
+import { verifyJWT } from '../middleware/auth';
+import validate from '../middleware/authValidator.middleware';
 
 const router = Router();
 
