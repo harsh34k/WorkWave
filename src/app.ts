@@ -8,10 +8,21 @@ import applicantRouter from "./routes/applicants.routes"
 import employerRouter from "./routes/employers.routes"
 import jobRouter from "./routes/jobs.routes"
 import applicationRouter from "./routes/applications.routes"
+import { createServer } from "http";
+import { socketServer } from "./socket";
+
 
 
 const app = express();
+const httpServer = createServer(app);
 const prisma = new PrismaClient();
+
+
+
+// using sockets
+socketServer(httpServer)
+
+
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -47,4 +58,4 @@ app.use("/api/v1/applications", applicationRouter);
 //   res.status(500).json({ message: "Internal server error" });
 // });
 
-export { app };
+export { httpServer };
