@@ -19,6 +19,7 @@ router.route("/register").post(
             maxCount: 1
         },
     ]),
+    // upload.single('avatarUrl'),
     validate<RegistrationData>(registrationSchema),
     registerUser
 )
@@ -29,7 +30,7 @@ router.route("/login").post(validate<LoginData>(loginSchema), loginUser)
 //secured routes
 router.route("/logout").post(verifyJWT("employer"), logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
-router.route("/change-password").post(verifyJWT("employer"), changeCurrentPassword)
+router.route("/change-password").put(verifyJWT("employer"), changeCurrentPassword)
 router.route("/current-user").get(verifyJWT("employer"), getCurrentUser)
 router.route("/update-account").patch(verifyJWT("employer"), updateAccountDetails)
 

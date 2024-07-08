@@ -135,18 +135,35 @@ const updateJob = async (req: Request, res: Response) => {
     }
 };
 
-const deleteJob = async (req: Request, res: Response) => {
+const deleteJob = async (req: requestwithUser, res: Response) => {
     try {
-        const jobId = req.params?.jobId;
+        const jobId = req.params.jobId;
+        const employerId = req.user?.id as string; // Assuming req.user contains authenticated user info
 
+        // Fetch the job to verify ownership
+        const job = await prisma.job.findUnique({
+            where: { id: jobId },
+            select: { employerId: true }, // Only select employerId for verification
+        });
+
+        // Check if job exists and belongs to the employer
+        if (!job) {
+            return res.status(404).json(new ApiResponse(404, null, 'Job not found.'));
+        }
+
+        if (job.employerId !== employerId) {
+            return res.status(403).json(new ApiResponse(403, null, 'You are not authorized to delete this job.'));
+        }
+
+        // Proceed to delete the job
         await prisma.job.delete({
             where: { id: jobId },
         });
 
-        return res.status(200).json({ message: 'Job deleted successfully.' });
+        return res.status(200).json(new ApiResponse(200, null, 'Job deleted successfully.'));
     } catch (error) {
         console.error('Error deleting job:', error);
-        return res.status(500).json({ error: 'Internal server error.' });
+        return res.status(500).json(new ApiResponse(500, null, 'Internal server error.'));
     }
 };
 

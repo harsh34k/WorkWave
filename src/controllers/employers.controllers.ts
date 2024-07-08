@@ -50,7 +50,9 @@ const generateAccessAndRefereshTokens = async (userId: string): Promise<TokenRes
 
 const registerUser = asyncHandler(async (req, res) => {
 
-
+    // console.log("req,", req);
+    // console.log("req.body,", req.body);
+    // console.log("req.file,", req.files);
     const { fullName, email, password, companyName, jobTitle } = req.body
 
     const existedUser = await prisma.employer.findUnique({
@@ -332,6 +334,8 @@ const getCurrentUser = asyncHandler(async (req: requestwithUser, res: Response) 
 })
 
 const updateAccountDetails = asyncHandler(async (req: requestwithUser, res: Response) => {
+
+
     const { fullName, email, companyName, jobTitle } = req.body;
 
     // Check if at least one field is provided

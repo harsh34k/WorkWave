@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ApiResponse } from "../utils/ApiResponse";
 import { PrismaClient } from "@prisma/client";
-import { requestwithUser } from "@/types/express";
+import { requestwithUser } from "../types/express";
 const prisma = new PrismaClient();
 // Apply for a job
 

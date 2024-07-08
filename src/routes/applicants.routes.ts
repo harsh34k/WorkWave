@@ -2,9 +2,9 @@ import { Router } from "express";
 import validate from "../middleware/authValidator.middleware"
 import { upload } from "../middleware/multer.middleware"
 import { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, getAllAppliedJobs } from "../controllers/applicant.controllers";
-import { RegistrationData, registrationSchema } from "../Validators/registrationValidator";
 import { LoginData, loginSchema } from "../Validators/loginValidator";
 import { verifyJWT } from "../middleware/auth";
+import { ApplicantRegistrationData, ApplicantRegistrationSchema } from "../Validators/registrationValidatorApplicant";
 
 
 const router = Router()
@@ -19,7 +19,7 @@ router.route("/register").post(
             maxCount: 1
         },
     ]),
-    validate<RegistrationData>(registrationSchema),
+    validate<ApplicantRegistrationData>(ApplicantRegistrationSchema),
     registerUser
 )
 
