@@ -115,7 +115,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 })
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req: requestwithUser, res) => {
     // req body -> data
     // username or email
     //find the user
@@ -151,28 +151,30 @@ const loginUser = asyncHandler(async (req, res) => {
     }
     console.log("tokenrespone",);
     const { accessToken, refreshToken } = tokenResponse;
+    console.log("req.user from applicant", req.user);
+
 
     const loggedInUser = await prisma.applicant.findUnique({
         where: {
             id: user.id
         },
-        select: {
-            id: true,
-            email: true,
-            fullName: true,
-            avatarUrl: true,
-        }
+
     })
+    console.log("req.user from applicant controllers", req.user);
 
     const options = {
-        httpOnly: true,
-        secure: true
+        // httpOnly: true,
+        // secure: true
     }
+    res.cookie('refreshToken', refreshToken, options);
+    res.cookie('accessToken', accessToken, options);
+    res.cookie('faltuToken', "randomString", options);
+    console.log("Cookies Set:", req.cookies);
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        // .cookie("accessToken", accessToken, options)
+        // .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200,
@@ -196,10 +198,10 @@ const logoutUser = asyncHandler(async (req: requestwithUser, res) => {
 
     // Options for clearing cookies
     const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // secure should be true only in production
-        sameSite: 'lax', // Helps prevent CSRF attacks
-        path: '/', // Path to apply the cookie
+        // httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production', // secure should be true only in production
+        // sameSite: 'lax', // Helps prevent CSRF attacks
+        // path: '/', // Path to apply the cookie
     };
 
     // Clear cookies and send response
@@ -211,7 +213,7 @@ const logoutUser = asyncHandler(async (req: requestwithUser, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
-    console.log("req.cookies", req.cookies);
+    console.log("req.cookies from refreshAcessToken", req.cookies);
 
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
@@ -316,11 +318,23 @@ const changeCurrentPassword = asyncHandler(async (req: requestwithUser, res: Res
 
 
 const getCurrentUser = asyncHandler(async (req: requestwithUser, res: Response) => {
+    const accesToken = req.cookies
+    console.log("accessToken", accesToken);
+
+    const user = await prisma.applicant.findUnique({
+        where: {
+            id: req.user?.id
+        },
+        include: {
+            applications: true // This will include the jobs created by the employer
+        }
+    }
+    )
     return res
         .status(200)
         .json(new ApiResponse(
             200,
-            req.user,
+            user,
             "User fetched successfully"
         ))
 })

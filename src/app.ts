@@ -12,8 +12,8 @@ import { createServer } from "http";
 import { socketServer } from "./socket";
 
 
-
 const app = express();
+app.use(cookieParser());
 const httpServer = createServer(app);
 const prisma = new PrismaClient();
 
@@ -29,10 +29,10 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.json({}));
+app.use(express.urlencoded({ extended: true, }));
 app.use(express.static("public"));
-app.use(cookieParser());
+
 
 // Example health check route
 app.get("/api/v1/healthcheck", (req, res) => {

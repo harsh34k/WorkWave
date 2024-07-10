@@ -37,4 +37,5 @@ router.route("/avatar").patch(verifyJWT("applicant"), upload.single("avatar"), u
 router.get('/c/applied-jobs', verifyJWT('applicant'), getAllAppliedJobs);
 
 
+
 export default router

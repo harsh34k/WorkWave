@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { JobData, JobSchema } from "../Validators/JobValidator"
-import { getAllJobs, getJobById, publishJob, updateJob, deleteJob, filterJob } from '../controllers/jobs.controllers';
+import { getAllJobs, publishJob, updateJob, deleteJob, filterJob, getJobById } from '../controllers/jobs.controllers';
 import { verifyJWT } from '../middleware/auth';
 import validate from '../middleware/authValidator.middleware';
 
@@ -20,6 +20,12 @@ router.route('/getAllJobs')
         getAllJobs
     );
 
+//filter data
+router.route("/filter")
+    .get(
+        filterJob // Controller function for filtering jobs
+    );
+
 // Route to get job by ID (accessible by all users)
 router.route('/:jobId')
     .get(
@@ -27,7 +33,7 @@ router.route('/:jobId')
     );
 
 // Route to update a job by ID (only accessible by employers)
-router.route('/:jobId')
+router.route(`/:jobId`)
     .put(
         verifyJWT("employer"),
         validate<Partial<JobData>>(JobSchema),
@@ -41,9 +47,6 @@ router.route('/:jobId')
         deleteJob
     );
 
-router.route("/filter")
-    .get(
-        filterJob // Controller function for filtering jobs
-    );
+
 
 export default router;

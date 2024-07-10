@@ -20,11 +20,16 @@ interface TokenInterface {
 export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async (req: requestwithUser, res: Response, next: NextFunction) => {
     try {
         console.log("hey i am here");
+        console.log("req.cookies", req.cookies.accessToken);
+        console.log("req.header", req.header("Set-cookie"));
+        console.log("req.headers", req.headers);
+        console.log("req.user hai from auth middleware", res.locals.user);
+
 
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
         const secret = process.env.ACCESS_TOKEN_SECRET as string;
 
-        // console.log(token);
+        console.log(token);
         if (!token) {
             return res.status(300).json(new ApiResponse(300, null, "Unauthorized request"))
 

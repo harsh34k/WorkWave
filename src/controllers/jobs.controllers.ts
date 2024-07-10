@@ -75,6 +75,8 @@ const getAllJobs = asyncHandler(async (req: Request, res: Response) => {
 
 const getJobById = async (req: Request, res: Response) => {
     try {
+        console.log("i am reaching here");
+
         const jobId = req.params.jobId as string;
 
         const job = await prisma.job.findUnique({
@@ -148,7 +150,7 @@ const deleteJob = async (req: requestwithUser, res: Response) => {
 
         // Check if job exists and belongs to the employer
         if (!job) {
-            return res.status(404).json(new ApiResponse(404, null, 'Job not found.'));
+            return res.status(404).json(new ApiResponse(404, null, 'Job not found by Id.'));
         }
 
         if (job.employerId !== employerId) {
@@ -180,6 +182,8 @@ interface JobFilters {
 }
 
 const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
+    console.log("atleast reached here");
+
     try {
         const {
             title,
@@ -189,7 +193,7 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
             experience,
             salary,
             education
-        } = req.query as JobFilters;
+        } = req.query as Partial<JobFilters>;
 
         // Build the filter object for Prisma
         const filters: any = {};
@@ -232,6 +236,9 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
         const jobs = await prisma.job.findMany({
             where: filters
         });
+        if (!jobs) {
+            return res.status(404).json(new ApiResponse(404, null, "No Job Found for filtered criteria"));
+        }
 
         return res.status(200).json(new ApiResponse(200, jobs, "Filtered jobs retrieved successfully"));
     } catch (error) {
@@ -245,4 +252,4 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
 
 
 
-export { publishJob, getAllJobs, getJobById, updateJob, deleteJob, filterJob }
+export { publishJob, getAllJobs, updateJob, getJobById, deleteJob, filterJob }

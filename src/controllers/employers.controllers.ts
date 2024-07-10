@@ -121,7 +121,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 })
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req: requestwithUser, res: Response) => {
     // req body -> data
     // username or email
     //find the user
@@ -155,32 +155,27 @@ const loginUser = asyncHandler(async (req, res) => {
     if (!tokenResponse) {
         return res.status(404).json({ message: "User not found" });
     }
-    console.log("tokenrespone",);
+    // console.log("tokenrespone",);
     const { accessToken, refreshToken } = tokenResponse;
+    console.log("tokenrespone", { accessToken, refreshToken });
+
+
 
     const loggedInUser = await prisma.employer.findUnique({
         where: {
             id: user.id
         },
-        select: {
-            id: true,
-            email: true,
-            fullName: true,
-            companyName: true,
-            jobTitle: true,
-            avatarUrl: true,
-        }
+
     })
+    res.locals.user = loggedInUser
 
     const options = {
-        httpOnly: true,
-        secure: true
+        httpOnly: false, sameSite: 'none', secure: true
     }
-
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, { httpOnly: true, sameSite: 'none', secure: true })
+        .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: 'none', secure: true })
         .json(
             new ApiResponse(
                 200,
@@ -195,6 +190,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req: requestwithUser, res) => {
     const userId = req.user?.id; // here the user will always be the employer
+    console.log("req.user", req.user?.id);
+
 
     // Update the user's refreshToken to null
     await prisma.employer.update({
@@ -219,7 +216,7 @@ const logoutUser = asyncHandler(async (req: requestwithUser, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
-    console.log("req.cookies", req.cookies);
+    console.log("req.cookies from refreshAcesstokenemployer", req.cookies);
 
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
@@ -324,11 +321,21 @@ const changeCurrentPassword = asyncHandler(async (req: requestwithUser, res: Res
 
 
 const getCurrentUser = asyncHandler(async (req: requestwithUser, res: Response) => {
+    const user = await prisma.employer.findUnique({
+        where: {
+            id: req.user?.id
+        },
+        include: {
+            createdJobs: true // This will include the jobs created by the employer
+        }
+    }
+    )
+
     return res
         .status(200)
         .json(new ApiResponse(
             200,
-            req.user,
+            user,
             "User fetched successfully"
         ))
 })

@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodSchema } from "zod";
 import { ApiResponse } from "../utils/ApiResponse";
+import { requestwithUser } from "@/types/express";
 
 const validate = <T>(schema: ZodSchema<T>) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         const parseBody = await schema.parseAsync(req.body);
         req.body = parseBody;
+        // req.user = user;
         next();
     } catch (error: any) {
         // console.log('error', error.errors);
