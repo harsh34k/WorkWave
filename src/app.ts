@@ -23,11 +23,11 @@ const prisma = new PrismaClient();
 socketServer(httpServer)
 
 
-
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: true,
     credentials: true
 }));
+app.options('*', cors())
 
 app.use(express.json({}));
 app.use(express.urlencoded({ extended: true, }));
@@ -39,7 +39,8 @@ app.get("/api/v1/healthcheck", (req, res) => {
     res.status(200).json({ message: "Health check OK" });
 });
 app.use('/api/v1/applicants', applicantRouter);
-app.use('/api/v1/employers', employerRouter);
+app.use('/api/v1/employers',
+    employerRouter);
 
 
 app.use("/api/v1/jobs", jobRouter);

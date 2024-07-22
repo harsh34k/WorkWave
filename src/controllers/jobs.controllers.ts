@@ -1,14 +1,14 @@
 import { requestwithUser } from "../types/express";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
-import { Experience, PrismaClient, Salary, WorkMode } from "@prisma/client";
+import { Education, Experience, PrismaClient, Salary, WorkMode } from "@prisma/client";
 import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
 const publishJob = asyncHandler(async (req: requestwithUser, res: Response) => {
     try {
-        const { title, description, location, workMode, experience, salary, duration, education } = req.body;
+        const { title, description, location, workMode, experience, salary, education } = req.body;
         const employerId = req.user?.id as string;
 
         const job = await prisma.job.create({
@@ -19,9 +19,8 @@ const publishJob = asyncHandler(async (req: requestwithUser, res: Response) => {
                 workMode,
                 experience,
                 salary,
-                duration,
                 education,
-                employerId
+                employerId,
             }
         });
         return res.status(200).json(new ApiResponse(200, job, "Job Published Succesfully"))
@@ -112,8 +111,7 @@ const updateJob = async (req: Request, res: Response) => {
             workMode: WorkMode;  // Use the actual type or enum if available
             experience: Experience; // Use the actual type or enum if available
             salary: Salary; // Use the actual type or enum if available
-            duration: string;
-            education: string;
+            education: Education;
         }> = {};
 
         if (title) updateData.title = title;
@@ -122,13 +120,17 @@ const updateJob = async (req: Request, res: Response) => {
         if (workMode) updateData.workMode = workMode;
         if (experience) updateData.experience = experience;
         if (salary) updateData.salary = salary;
-        if (duration) updateData.duration = duration;
         if (education) updateData.education = education;
+        console.log("jobId now", jobId);
+        console.log("updateData", updateData);
+
 
         const updatedJob = await prisma.job.update({
             where: { id: jobId },
             data: updateData,
         });
+        console.log("ab to ho gya hoga bhai", updatedJob);
+
 
         return res.status(200).json(new ApiResponse(200, updatedJob, 'Job updated successfully.'));
     } catch (error) {
@@ -170,6 +172,7 @@ const deleteJob = async (req: requestwithUser, res: Response) => {
 };
 
 
+
 // Define possible query parameters and their types
 interface JobFilters {
     title?: string;
@@ -187,7 +190,6 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
     try {
         const {
             title,
-            description,
             location,
             workMode,
             experience,
@@ -201,12 +203,6 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
         if (title) {
             filters.title = {
                 contains: title,
-                mode: "insensitive"
-            };
-        }
-        if (description) {
-            filters.description = {
-                contains: description,
                 mode: "insensitive"
             };
         }
@@ -226,11 +222,10 @@ const filterJob = asyncHandler(async (req: requestwithUser, res: Response) => {
             filters.salary = salary;
         }
         if (education) {
-            filters.education = {
-                contains: education,
-                mode: "insensitive"
-            };
+            filters.education = education
         }
+        console.log("tiitle", title);
+
 
         // Fetch filtered jobs from Prisma
         const jobs = await prisma.job.findMany({

@@ -133,7 +133,7 @@ const loginUser = asyncHandler(async (req: requestwithUser, res: Response) => {
 
     const user = await prisma.employer.findFirst({
         where: {
-            OR: [
+            AND: [
                 { email },
                 { fullName }
             ]
@@ -165,13 +165,12 @@ const loginUser = asyncHandler(async (req: requestwithUser, res: Response) => {
         where: {
             id: user.id
         },
+        include: {
+            createdJobs: true
+        }
 
     })
-    res.locals.user = loggedInUser
 
-    const options = {
-        httpOnly: false, sameSite: 'none', secure: true
-    }
     return res
         .status(200)
         .cookie("accessToken", accessToken, { httpOnly: true, sameSite: 'none', secure: true })
@@ -305,7 +304,11 @@ const changeCurrentPassword = asyncHandler(async (req: requestwithUser, res: Res
         return res.status(400).json(new ApiResponse(400, {}, "Invalid old password"))
     }
 
-    user.password = newPassword;
+    const hashedPassword = await hashPassword(newPassword);
+
+
+
+    user.password = hashedPassword;
 
     await prisma.employer.update({
         where: {
@@ -321,6 +324,8 @@ const changeCurrentPassword = asyncHandler(async (req: requestwithUser, res: Res
 
 
 const getCurrentUser = asyncHandler(async (req: requestwithUser, res: Response) => {
+    console.log("reaching here getCurrentUser");
+
     const user = await prisma.employer.findUnique({
         where: {
             id: req.user?.id
@@ -443,7 +448,6 @@ const getAllCreatedJobs = asyncHandler(async (req: requestwithUser, res: Respons
                 workMode: true,
                 experience: true,
                 salary: true,
-                duration: true,
                 education: true,
                 postedAt: true,
             },

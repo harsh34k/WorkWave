@@ -51,8 +51,7 @@ model Job {
   workMode     WorkMode // New field for work mode
   experience   Experience // New field for experience level
   salary       Salary // New field for salary
-  duration     String // New field for duration
-  education    String // New field for required education
+  education    Education // New field for required education
   postedAt     DateTime      @default(now())
   employerId   String
   employer     Employer      @relation(fields: [employerId], references: [id])
@@ -64,6 +63,7 @@ model Application {
   jobId       String
   applicantId String
   coverLetter String
+  resumeUrl   String
   job         Job       @relation(fields: [jobId], references: [id])
   applicant   Applicant @relation(fields: [applicantId], references: [id])
 
@@ -74,6 +74,14 @@ enum WorkMode {
   ONSITE
   REMOTE
   HYBRID
+}
+
+enum Education {
+  TENTH
+  TWELFTH
+  GRADUATION
+  POSTGRADUATION
+  PHD
 }
 
 enum Experience {

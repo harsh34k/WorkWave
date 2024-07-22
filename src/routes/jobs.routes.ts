@@ -3,12 +3,14 @@ import { JobData, JobSchema } from "../Validators/JobValidator"
 import { getAllJobs, publishJob, updateJob, deleteJob, filterJob, getJobById } from '../controllers/jobs.controllers';
 import { verifyJWT } from '../middleware/auth';
 import validate from '../middleware/authValidator.middleware';
+import { upload } from '../middleware/multer.middleware';
 
 const router = Router();
 
 // Route to publish a job (only accessible by employers)
 router.route('/')
     .post(
+        upload.none(),
         verifyJWT("employer"),
         validate<JobData>(JobSchema),
         publishJob
@@ -35,6 +37,7 @@ router.route('/:jobId')
 // Route to update a job by ID (only accessible by employers)
 router.route(`/:jobId`)
     .put(
+        upload.none(),
         verifyJWT("employer"),
         validate<Partial<JobData>>(JobSchema),
         updateJob

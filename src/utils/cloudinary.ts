@@ -15,6 +15,8 @@ const deletefile = async (public_id: string[]) => {
 
 const uploadOnCloudinary = async (localFilePath: string): Promise<UploadApiResponse | null> => {
     try {
+        console.log("in uploadOnCloudinary");
+
         if (!localFilePath) return null;
         console.log("localpath", localFilePath);
 
@@ -23,7 +25,7 @@ const uploadOnCloudinary = async (localFilePath: string): Promise<UploadApiRespo
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
         });
-        // console.log("response", response);
+        console.log("response", response);
 
 
         // File has been uploaded successfully

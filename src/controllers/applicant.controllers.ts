@@ -127,7 +127,7 @@ const loginUser = asyncHandler(async (req: requestwithUser, res) => {
 
     const user = await prisma.applicant.findFirst({
         where: {
-            OR: [
+            AND: [
                 { email },
                 { fullName }
             ]
@@ -158,23 +158,22 @@ const loginUser = asyncHandler(async (req: requestwithUser, res) => {
         where: {
             id: user.id
         },
+        include: {
+            applications: true
+        }
 
     })
     console.log("req.user from applicant controllers", req.user);
 
-    const options = {
-        // httpOnly: true,
-        // secure: true
-    }
-    res.cookie('refreshToken', refreshToken, options);
-    res.cookie('accessToken', accessToken, options);
-    res.cookie('faltuToken', "randomString", options);
-    console.log("Cookies Set:", req.cookies);
+    // res.cookie('refreshToken', refreshToken, options);
+    // res.cookie('accessToken', accessToken, options);
+    // res.cookie('faltuToken', "randomString", options);
+    // console.log("Cookies Set:", req.cookies);
 
     return res
         .status(200)
-        // .cookie("accessToken", accessToken, options)
-        // .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, { httpOnly: true, sameSite: 'none', secure: true })
+        .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: 'none', secure: true })
         .json(
             new ApiResponse(
                 200,
@@ -296,13 +295,14 @@ const changeCurrentPassword = asyncHandler(async (req: requestwithUser, res: Res
     }
     // isPasswordCorrect('applicant', user.id, password)
     const isPasswordRight = await isPasswordCorrect('applicant', req.user?.id as string, oldPassword)
-
-
     if (!isPasswordRight) {
         return res.status(400).json(new ApiResponse(400, {}, "Invalid old password"))
     }
+    const hashedPassword = await hashPassword(newPassword);
 
-    user.password = newPassword;
+
+
+    user.password = hashedPassword;
 
     await prisma.applicant.update({
         where: {
@@ -436,7 +436,6 @@ const getAllAppliedJobs = asyncHandler(async (req: requestwithUser, res: Respons
                         workMode: true,
                         experience: true,
                         salary: true,
-                        duration: true,
                         education: true,
                         postedAt: true,
                     }

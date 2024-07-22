@@ -19,7 +19,9 @@ interface TokenInterface {
 
 export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async (req: requestwithUser, res: Response, next: NextFunction) => {
     try {
-        console.log("hey i am here");
+        // console.log("hey i am here");
+        console.log("yha hu mai or you can say hey i am here");
+
         console.log("req.cookies", req.cookies.accessToken);
         console.log("req.header", req.header("Set-cookie"));
         console.log("req.headers", req.headers);
@@ -42,6 +44,8 @@ export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async 
 
         let user;
         if (role === "applicant") {
+            console.log("current user is applicant");
+
             user = await prisma.applicant.findUnique({
                 where: {
                     id: decodedToken.id
@@ -49,6 +53,8 @@ export const verifyJWT = (role: "employer" | "applicant") => asyncHandler(async 
             })
         }
         else {
+            console.log("current user is employer");
+
             user = await prisma.employer.findUnique({
                 where: {
                     id: decodedToken.id
