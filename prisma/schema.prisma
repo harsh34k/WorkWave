@@ -64,7 +64,7 @@ model Application {
   applicantId String
   coverLetter String
   resumeUrl   String
-  job         Job       @relation(fields: [jobId], references: [id])
+  job         Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicant   Applicant @relation(fields: [applicantId], references: [id])
 
   @@map("applications")

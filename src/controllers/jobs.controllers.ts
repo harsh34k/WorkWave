@@ -29,36 +29,6 @@ const publishJob = asyncHandler(async (req: requestwithUser, res: Response) => {
     }
 })
 
-// Assuming `applyForJob` controller function handles application submission
-
-// const applyForJob = async (req: Request, res: Response) => {
-//     try {
-//       const { jobId, coverLetter } = req.body;
-//       const applicantId = req.user?.id; // Assuming applicant ID is retrieved from authenticated user
-
-//       // Validate required fields
-//       if (!jobId || !applicantId || !coverLetter) {
-//         return res.status(400).json({ error: 'Please provide jobId, applicantId, and coverLetter.' });
-//       }
-
-//       // Create application using Prisma
-//       const createdApplication = await prisma.application.create({
-//         data: {
-//           jobId,
-//           applicantId,
-//           coverLetter,
-//         },
-//       });
-
-//       return res.status(201).json({
-//         message: 'Application submitted successfully.',
-//         application: createdApplication,
-//       });
-//     } catch (error) {
-//       console.error('Error submitting application:', error);
-//       return res.status(500).json({ error: 'Internal server error.' });
-//     }
-//   };
 
 
 const getAllJobs = asyncHandler(async (req: Request, res: Response) => {
